@@ -3,3 +3,6 @@ init:
 
 test:
 	nose2 -v
+
+start:
+	python main.py

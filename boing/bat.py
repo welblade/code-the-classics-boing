@@ -1,4 +1,11 @@
+import math, random
 from pgzero.actor import Actor
+
+WIDTH = 800
+HEIGHT = 480
+HALF_WIDTH = WIDTH // 2
+HALF_HEIGHT = HEIGHT // 2
+PLAYER_SPEED = 6
 
 class Bat(Actor):
     def __init__(self, player, move_func=None):
@@ -40,5 +47,3 @@ class Bat(Actor):
         weight1 = min(1, x_distance / HALF_WIDTH)
         weight2 = 1 - weight1
         target_y = (weight1 * target_y_1) + (weight2 * target_y_2)
-    
-    
