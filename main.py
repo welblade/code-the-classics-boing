@@ -1,10 +1,9 @@
 import pgzrun
-
-import math
 import pygame
 
 from boing.game import Game
 from boing.state import State
+from boing.sound import SoundPlayer
 
 WIDTH = 800
 HEIGHT = 480
@@ -18,15 +17,6 @@ num_players = 1
 space_down = False
 
 
-def normalised(x, y):
-    length = math.hypot(x, y)
-    return x / length, y / length
-
-
-def sign(x):
-    return -1 if x < 0 else 1
-
-
 def update():
     global state, game, num_players, space_down
     space_pressed = False
@@ -34,19 +24,21 @@ def update():
     if keyboard.space and not space_down:
         space_pressed = True
 
+    sound_player = SoundPlayer(sounds)
+
     space_down = keyboard.space
 
     if state == State.MENU:
-        game = Game(screen)
+        game = Game(screen, sound_player, keyboard)
         if space_pressed:
             state = State.PLAY
-            game = Game(screen, num_players)
+            game = Game(screen, sound_player, keyboard, num_players)
         else:
             if num_players == 2 and keyboard.up:
-                sounds.up.play()
+                sound_player.up()
                 num_players = 1
             elif num_players == 1 and keyboard.down:
-                sounds.down.play()
+                sound_player.down()
                 num_players = 2
             game.update()
 
@@ -60,7 +52,7 @@ def update():
         if space_pressed:
             state = State.MENU
             num_players = 1
-            game = Game(screen)
+            game = Game(screen, sound_player, keyboard)
 
 
 def draw():

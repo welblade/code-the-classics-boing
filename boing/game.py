@@ -1,12 +1,13 @@
 import random
 
-from pgzero import keyboard
-
 from boing.ai_control import AIControl
 from boing.ball import Ball
 from boing.bat import Bat
 from boing.control import Control
 from boing.pos import Pos
+from boing.sound import SoundPlayer
+from boing.impact import Impact
+
 
 WIDTH = 800
 HEIGHT = 480
@@ -18,36 +19,53 @@ MAX_AI_SPEED = 6
 
 
 class Game:
-    def __init__(self, screen=None, controls=0):
+    def __init__(self, screen=None, sounds: SoundPlayer = None, keyboard=None, controls=0):
         self.screen = screen
+        self.sounds = sounds
         self.first_bat_position_listener = []
         self.second_bat_position_listener = []
         self.ball_position_listener = []
         self.ball = Ball(-1)
         self.ball.ia_offset_listener(self.ia_offsets_randomize)
+        self.ball.on_hit_bat(self.ball_hit_bat)
         self.first_bat_position_listener.append(self.ball.fist_bat_position_listener)
         self.second_bat_position_listener.append(self.ball.second_bat_position_listener)
         self.ai_offsets = 0
         self.bats = []
-
         if controls > 0:
-            self.bats.append(Bat(0, Control(keyboard.z, keyboard.a)))
+            control_1 = Control(keyboard.z, keyboard.a)
         else:
-            ai1 = AIControl(self.ai_offsets)
-            self.first_bat_position_listener.append(ai1.my_bat_position_listener)
-            self.ball_position_listener.append(ai1.ball_position_listener)
-            self.bats.append(Bat(0, ai1))
+            control_1 = AIControl(self.ai_offsets)
+            self.first_bat_position_listener.append(control_1.my_bat_position_listener)
+            self.ball_position_listener.append(control_1.ball_position_listener)
+
+        player1 = Bat(0, control_1)
+        self.ball_position_listener.append(player1.ball_position_listener)
+        self.bats.append(player1)
+
         if controls > 1:
+            control_2 = Control(keyboard.z, keyboard.a)
             self.bats.append(Bat(1, Control(keyboard.m, keyboard.k)))
         else:
-            ai2 = AIControl(self.ai_offsets)
-            self.second_bat_position_listener.append(ai2.my_bat_position_listener)
-            self.ball_position_listener.append(ai2.ball_position_listener)
-            self.bats.append(Bat(1, ai2))
+            control_2 = AIControl(self.ai_offsets)
+            self.second_bat_position_listener.append(control_2.my_bat_position_listener)
+            self.ball_position_listener.append(control_2.ball_position_listener)
+
+        player2 = Bat(1, control_2)
+        self.ball_position_listener.append(player2.ball_position_listener)
+        self.bats.append(player2)
         self.impacts = []
 
     def ia_offsets_randomize(self):
         self.ai_offsets = random.randint(-10, 10)
+
+    def ball_hit_bat(self, pos: Pos, speed):
+        self.impacts.append(Impact((pos.x, pos.y)))
+        self.sounds.hit(speed)
+
+    def ball_hit_wall(self, pos: Pos):
+        self.impacts.append(Impact((pos.x, pos.y)))
+        self.sounds.bounce()
 
     def update(self):
         for obj in self.bats + [self.ball] + self.impacts:
@@ -72,9 +90,8 @@ class Game:
 
             if self.bats[losing_player].timer < 0:
                 self.bats[scoring_player].score += 1
-                game.play_sound("score_goal", 1)
                 self.bats[losing_player].timer = 20
-
+                self.sounds.score_goal()
             elif self.bats[losing_player].timer == 0:
                 direction = -1 if losing_player == 0 else 1
                 self.ball = Ball(direction)
@@ -82,7 +99,7 @@ class Game:
     def draw(self):
         self.screen.blit("table", (0, 0))
         for p in (0, 1):
-            if self.bats[p].timer > 0 and game.ball.out():
+            if self.bats[p].timer > 0 and self.ball.out():
                 self.screen.blit("effect" + str(p), (0, 0))
 
         for obj in self.bats + [self.ball] + self.impacts:
@@ -94,15 +111,8 @@ class Game:
                 colour = "0"
                 other_p = 1 - p
 
-        if self.bats[other_p].timer > 0 and game.ball.out():
+        if self.bats[other_p].timer > 0 and self.ball.out():
             colour = "2" if p == 0 else "1"
 
         image = "digit" + colour + str(score[i])
         self.screen.blit(image, (255 + (160 * p) + (i * 55), 46))
-
-    def play_sound(self, name, count=1):
-        if self.bats[0].move_func != self.bats[0].ai:
-            try:
-                getattr(sounds, name + str(random.randint(0, count - 1))).play()
-            except:
-                pass

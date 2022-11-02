@@ -9,6 +9,7 @@ HALF_WIDTH = WIDTH // 2
 HALF_HEIGHT = HEIGHT // 2
 PLAYER_SPEED = 6
 
+
 class AIControl(Control):
     def __init__(self, ai_offset):
         super().__init__(None, None)
@@ -23,7 +24,8 @@ class AIControl(Control):
 
     def ball_position_listener(self, pos: Pos) -> None:
         self.ball = pos
-    def move(self): #Mover para uma classe própria
+
+    def move(self):  # Mover para uma classe própria
         x_distance = abs(self.ball.x - self.x)
         target_y_1 = HALF_HEIGHT
         target_y_2 = self.ball.y + self.ai_offset
