@@ -1,5 +1,10 @@
-from boing.bat import Bat
+from pgzero import keyboard
+from pgzero.keyboard import Keyboard
+
 from boing.ball import Ball
+from boing.bat import Bat
+from boing.control import Control
+from boing.ai_control import AIControl
 
 WIDTH = 800
 HEIGHT = 480
@@ -10,16 +15,49 @@ PLAYER_SPEED = 6
 MAX_AI_SPEED = 6
 
 class Game:
-    def __init__(self, controls=(None, None)):
-      self.bats = [Bat(0, controls[0]), Bat(1, controls[1])]
-      self.ball = Ball(-1)
-      self.impacts = []
-      self.ai_offset = 0
-      
+    def __init__(self, controls = 0):
+        self.first_bat_position_listener = []
+        self.second_bat_position_listener = []
+        self.ball_position_listener = []
+        self.ball = Ball(-1)
+        ball.ia_offset_listener(self.ia_offsets_randomize)
+        self.first_bat_position_listener.append(self.ball.fist_bat_position_listener)
+        self.second_bat_position_listener.append(self.ball.second_bat_position_listener)
+        self.ai_offsets = 0
+        self.bats = []
+
+
+        if controls > 0:
+            self.bats.append(Bat(0, Control(keyboard.z,  keyboard.a)))
+        else:
+            ai1 =AIControl(self.ai_offsets)
+            self.first_bat_position_listener.append(ai1.my_bat_position_listener)
+            self.ball_position_listener.append(ai1.ball_position_listener)
+            self.bats.append(Bat(0, ai1))
+        if controls > 1:
+            self.bats.append(Bat(1, Control(keyboard.m, keyboard.k)))
+        else:
+            ai2 = AIControl(self.ai_offsets)
+            self.second_bat_position_listener.append(ai2.my_bat_position_listener)
+            self.ball_position_listener.append(ai2.ball_position_listener)
+            self.bats.append(Bat(1, ai2))
+        self.impacts = []
+
+    def ia_offsets_randomize(self):
+        self.ai_offsets = random.randint(-10, 10)
     def update(self):
         for obj in self.bats + [self.ball] + self.impacts:
             obj.update()
-            
+
+        for listener in self.first_bat_position_listener:
+            listener(Pos(self.bats[0].x, self.bats[0].y))
+
+        for listener in self.second_bat_position_listener:
+            listener(Pos(self.bats[1].x, self.bats[1].y))
+
+        for listener in self.ball_position_listener:
+            listener(Pos(self.ball.x, self.ball.y))
+
         for i in range(len(self.impacts) - 1, -1, -1):
             if self.impacts[i].time >= 10:
                 del self.impacts[i]

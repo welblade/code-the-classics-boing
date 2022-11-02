@@ -1,15 +1,14 @@
-from pgzero import keyboard
-from pgzero.keyboard import Keyboard
+PLAYER_SPEED = 6
 
-class Control():
-    def __init__(self):
-        self.up = []
-        self.down =[]
+class Control:
+    def __init__(self, up, down):
+        self.up = up
+        self.down = down
         
     def move(self):
         move = 0
-        if keyboard.z or keyboard.down:
+        if self.down:
             move = PLAYER_SPEED
-        elif keyboard.a or keyboard.up:
+        elif self.up:
             move = -PLAYER_SPEED
         return move

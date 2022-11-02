@@ -2,6 +2,7 @@ import pgzero, pgzrun, pygame
 import math, sys, random
 from boing.state import State
 from boing.game import Game
+from boing.control import Control
 
 if sys.version_info < (3,5):
     print("This game requires at least version 3.5 of Python. Please download"
@@ -29,26 +30,10 @@ space_down = False
 
 def normalised(x, y):
    length = math.hypot(x, y)
-   return (x / length, y / length)
+   return x / length, y / length
 
 def sign(x):
    return -1 if x < 0 else 1
-
-def p1_controls():
-    move = 0
-    if keyboard.z or keyboard.down:
-        move = PLAYER_SPEED
-    elif keyboard.a or keyboard.up:
-        move = -PLAYER_SPEED
-    return move
-
-def p2_controls():
-    move = 0
-    if keyboard.m:
-        move = PLAYER_SPEED
-    elif keyboard.k:
-        move = -PLAYER_SPEED
-    return move
 
 def update():
     global state, game, num_players, space_down
@@ -62,10 +47,7 @@ def update():
     if state == State.MENU:
         if space_pressed:
             state = State.PLAY
-            controls = [p1_controls]
-            controls.append(p2_controls if num_players == 2 else None)
-
-            game = Game(controls)
+            game = Game(num_players)
         else:
             if num_players == 2 and keyboard.up:
                 sounds.up.play()

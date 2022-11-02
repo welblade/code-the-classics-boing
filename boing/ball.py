@@ -1,4 +1,8 @@
+import typing
+from collections.abc import Callable
 from pgzero.actor import Actor
+
+from boing.pos import Pos
 
 WIDTH = 800
 HEIGHT = 480
@@ -15,11 +19,20 @@ class Ball(Actor):
         self.x, self.y = HALF_WIDTH, HALF_HEIGHT
         self.dx, self.dy = dx, 0
         self.speed = 5
+        self.bats = [Pos(), Pos()]
+        self.ia_offset_changer = None
+
+    def fist_bat_position_listener(self, pos):
+        self.bats[0] = pos
+        self.bats[0].y = pos[1]
     
-    def setPosition(x, y):
-        self.x = x 
-        self.y = y
+    def second_bat_position_listener(self, pos) -> None:
+        self.bats[1].x = pos[0]
+        self.bats[1].y = pos[1]
     
+    def ia_offset_listener(self, ia_offset_changer: Callable[[], None]) -> None:
+        self.ia_offset_changer = ia_offset_changer
+
     def update(self):
         for i in range(self.speed):
             original_x = self.x
@@ -28,10 +41,10 @@ class Ball(Actor):
             if abs(self.x - HALF_WIDTH) >= 344 and abs(original_x - HALF_WIDTH) < 344:
                 if self.x < HALF_WIDTH:
                     new_dir_x = 1
-                    bat = game.bats[0]
+                    bat = self.bats[0]
                 else:
                     new_dir_x = -1
-                    bat = game.bats[1]
+                    bat = self.bats[1]
                     
             difference_y = self.y - bat.y
             
@@ -42,7 +55,7 @@ class Ball(Actor):
                 self.dx, self.dy = normalised(self.dx, self.dy)
                 game.impacts.append(Impact((self.x - new_dir_x * 10, self.y)))
                 self.speed += 1
-                game.ai_offset = random.randint(-10, 10)
+                self.ia_offset_changer()
                 bat.timer = 10
                 game.play_sound("hit", 5)
                 if self.speed <= 10:
