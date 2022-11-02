@@ -1,10 +1,12 @@
-from pgzero import keyboard
-from pgzero.keyboard import Keyboard
+import random
 
+from pgzero import keyboard
+
+from boing.ai_control import AIControl
 from boing.ball import Ball
 from boing.bat import Bat
 from boing.control import Control
-from boing.ai_control import AIControl
+from boing.pos import Pos
 
 WIDTH = 800
 HEIGHT = 480
@@ -14,23 +16,24 @@ HALF_HEIGHT = HEIGHT // 2
 PLAYER_SPEED = 6
 MAX_AI_SPEED = 6
 
+
 class Game:
-    def __init__(self, controls = 0):
+    def __init__(self, screen=None, controls=0):
+        self.screen = screen
         self.first_bat_position_listener = []
         self.second_bat_position_listener = []
         self.ball_position_listener = []
         self.ball = Ball(-1)
-        ball.ia_offset_listener(self.ia_offsets_randomize)
+        self.ball.ia_offset_listener(self.ia_offsets_randomize)
         self.first_bat_position_listener.append(self.ball.fist_bat_position_listener)
         self.second_bat_position_listener.append(self.ball.second_bat_position_listener)
         self.ai_offsets = 0
         self.bats = []
 
-
         if controls > 0:
-            self.bats.append(Bat(0, Control(keyboard.z,  keyboard.a)))
+            self.bats.append(Bat(0, Control(keyboard.z, keyboard.a)))
         else:
-            ai1 =AIControl(self.ai_offsets)
+            ai1 = AIControl(self.ai_offsets)
             self.first_bat_position_listener.append(ai1.my_bat_position_listener)
             self.ball_position_listener.append(ai1.ball_position_listener)
             self.bats.append(Bat(0, ai1))
@@ -45,6 +48,7 @@ class Game:
 
     def ia_offsets_randomize(self):
         self.ai_offsets = random.randint(-10, 10)
+
     def update(self):
         for obj in self.bats + [self.ball] + self.impacts:
             obj.update()
@@ -61,41 +65,41 @@ class Game:
         for i in range(len(self.impacts) - 1, -1, -1):
             if self.impacts[i].time >= 10:
                 del self.impacts[i]
-                
+
         if self.ball.out():
             scoring_player = 1 if self.ball.x < WIDTH // 2 else 0
             losing_player = 1 - scoring_player
-            
-        if self.bats[losing_player].timer < 0:
-            self.bats[scoring_player].score += 1
-            game.play_sound("score_goal", 1)
-            self.bats[losing_player].timer = 20
-            
-        elif self.bats[losing_player].timer == 0:               
-            direction = -1 if losing_player == 0 else 1
-            self.ball = Ball(direction)
-    
+
+            if self.bats[losing_player].timer < 0:
+                self.bats[scoring_player].score += 1
+                game.play_sound("score_goal", 1)
+                self.bats[losing_player].timer = 20
+
+            elif self.bats[losing_player].timer == 0:
+                direction = -1 if losing_player == 0 else 1
+                self.ball = Ball(direction)
+
     def draw(self):
-        screen.blit("table", (0,0))
-        for p in (0,1):
+        self.screen.blit("table", (0, 0))
+        for p in (0, 1):
             if self.bats[p].timer > 0 and game.ball.out():
-                screen.blit("effect" + str(p), (0,0))
-                
+                self.screen.blit("effect" + str(p), (0, 0))
+
         for obj in self.bats + [self.ball] + self.impacts:
             obj.draw()
-            
-        for p in (0,1):
+
+        for p in (0, 1):
             score = "{0:02d}".format(self.bats[p].score)
-            for i in (0,1):
+            for i in (0, 1):
                 colour = "0"
                 other_p = 1 - p
-                
+
         if self.bats[other_p].timer > 0 and game.ball.out():
-            colour = "2" if p == 0  else "1"
-            
+            colour = "2" if p == 0 else "1"
+
         image = "digit" + colour + str(score[i])
-        screen.blit(image, (255 + (160 * p) + (i * 55), 46))
-    
+        self.screen.blit(image, (255 + (160 * p) + (i * 55), 46))
+
     def play_sound(self, name, count=1):
         if self.bats[0].move_func != self.bats[0].ai:
             try:
