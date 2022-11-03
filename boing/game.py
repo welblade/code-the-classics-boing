@@ -1,5 +1,6 @@
 import random
 
+from pgzero.keyboard import Keyboard
 from boing.ai_control import AIControl
 from boing.ball import Ball
 from boing.bat import Bat
@@ -19,7 +20,7 @@ MAX_AI_SPEED = 6
 
 
 class Game:
-    def __init__(self, screen=None, sounds: SoundPlayer = None, keyboard=None, controls=0):
+    def __init__(self, screen=None, sounds: SoundPlayer = None, keyboard: Keyboard = None, controls=0):
         self.screen = screen
         self.sounds = sounds
         self.first_bat_position_listener = []
@@ -33,7 +34,7 @@ class Game:
         self.ai_offsets = 0
         self.bats = []
         if controls > 0:
-            control_1 = Control(keyboard.z, keyboard.a)
+            control_1 = Control(keyboard, 'z', 'a')
         else:
             control_1 = AIControl(self.ai_offsets)
             self.first_bat_position_listener.append(control_1.my_bat_position_listener)
@@ -44,7 +45,7 @@ class Game:
         self.bats.append(player1)
 
         if controls > 1:
-            control_2 = Control(keyboard.z, keyboard.a)
+            control_2 = Control(keyboard, 'k', 'm')
             self.bats.append(Bat(1, Control(keyboard.m, keyboard.k)))
         else:
             control_2 = AIControl(self.ai_offsets)

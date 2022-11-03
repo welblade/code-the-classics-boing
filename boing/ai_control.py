@@ -12,7 +12,7 @@ MAX_AI_SPEED = 6
 
 class AIControl(Control):
     def __init__(self, ai_offset):
-        super().__init__(None, None)
+        super().__init__(None, None, None)
         self.ball = Pos()
         self.ai_offset = ai_offset
         self.x = 0
