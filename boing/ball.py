@@ -68,7 +68,6 @@ class Ball(Actor):
                     self.dx, self.dy = normalised(self.dx, self.dy)
                     self.speed += 1
                     self.ia_offset_changer()
-                    bat.timer = 10
 
                     pos = Pos(self.x - new_dir_x * 10, self.y)
                     self.hit_bat(pos, self.speed)

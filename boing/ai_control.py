@@ -7,7 +7,7 @@ WIDTH = 800
 HEIGHT = 480
 HALF_WIDTH = WIDTH // 2
 HALF_HEIGHT = HEIGHT // 2
-PLAYER_SPEED = 6
+MAX_AI_SPEED = 6
 
 
 class AIControl(Control):
@@ -31,4 +31,5 @@ class AIControl(Control):
         target_y_2 = self.ball.y + self.ai_offset
         weight1 = min(1, x_distance / HALF_WIDTH)
         weight2 = 1 - weight1
-        return (weight1 * target_y_1) + (weight2 * target_y_2)
+        target_y = (weight1 * target_y_1) + (weight2 * target_y_2)
+        return min(MAX_AI_SPEED, max(-MAX_AI_SPEED, target_y - self.y))

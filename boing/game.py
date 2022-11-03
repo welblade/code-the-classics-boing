@@ -62,15 +62,14 @@ class Game:
     def ball_hit_bat(self, pos: Pos, speed):
         self.impacts.append(Impact((pos.x, pos.y)))
         self.sounds.hit(speed)
+        player = 0 if pos.x < HALF_WIDTH else 1
+        self.bats[player].timer = 10
 
     def ball_hit_wall(self, pos: Pos):
         self.impacts.append(Impact((pos.x, pos.y)))
         self.sounds.bounce()
 
     def update(self):
-        for obj in self.bats + [self.ball] + self.impacts:
-            obj.update()
-
         for listener in self.first_bat_position_listener:
             listener(Pos(self.bats[0].x, self.bats[0].y))
 
@@ -79,6 +78,9 @@ class Game:
 
         for listener in self.ball_position_listener:
             listener(Pos(self.ball.x, self.ball.y))
+
+        for obj in self.bats + [self.ball] + self.impacts:
+            obj.update()
 
         for i in range(len(self.impacts) - 1, -1, -1):
             if self.impacts[i].time >= 10:
