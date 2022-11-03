@@ -46,7 +46,6 @@ class Game:
 
         if controls > 1:
             control_2 = Control(keyboard, 'k', 'm')
-            self.bats.append(Bat(1, Control(keyboard.m, keyboard.k)))
         else:
             control_2 = AIControl(self.ai_offsets)
             self.second_bat_position_listener.append(control_2.my_bat_position_listener)
