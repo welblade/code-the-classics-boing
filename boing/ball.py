@@ -1,9 +1,9 @@
 from collections.abc import Callable
+
 from pgzero.actor import Actor
-from boing.utils import normalised
-from boing.impact import Impact
 
 from boing.pos import Pos
+from boing.utils import normalised
 
 WIDTH = 800
 HEIGHT = 480
@@ -18,7 +18,6 @@ class Ball(Actor):
         super().__init__("ball", (0, 0))
         self.hit_bat_callback = None
         self.hit_wall_callback = None
-        # remover isso e colocar em outro lugar
         self.x, self.y = HALF_WIDTH, HALF_HEIGHT
         self.dx, self.dy = dx, 0
         self.speed = 5
@@ -60,19 +59,19 @@ class Ball(Actor):
                     new_dir_x = 1
                     bat = self.bats[0]
 
-            difference_y = self.y - bat.y
+                difference_y = self.y - bat.y
 
-            if -64 < difference_y < 64:
-                self.dx = -self.dx
-                self.dy += difference_y / 128
-                self.dy = min(max(self.dy, -1), 1)
-                self.dx, self.dy = normalised(self.dx, self.dy)
-                self.speed += 1
-                self.ia_offset_changer()
-                bat.timer = 10
+                if -64 < difference_y < 64:
+                    self.dx = -self.dx
+                    self.dy += difference_y / 128
+                    self.dy = min(max(self.dy, -1), 1)
+                    self.dx, self.dy = normalised(self.dx, self.dy)
+                    self.speed += 1
+                    self.ia_offset_changer()
+                    bat.timer = 10
 
-                pos = Pos(self.x - new_dir_x * 10, self.y)
-                self.hit_bat(pos, self.speed)
+                    pos = Pos(self.x - new_dir_x * 10, self.y)
+                    self.hit_bat(pos, self.speed)
 
             if abs(self.y - HALF_HEIGHT) > 220:
                 self.dy = -self.dy
