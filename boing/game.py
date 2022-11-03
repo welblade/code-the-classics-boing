@@ -26,11 +26,7 @@ class Game:
         self.first_bat_position_listener = []
         self.second_bat_position_listener = []
         self.ball_position_listener = []
-        self.ball = Ball(-1)
-        self.ball.ia_offset_listener(self.ia_offsets_randomize)
-        self.ball.on_hit_bat(self.ball_hit_bat)
-        self.first_bat_position_listener.append(self.ball.fist_bat_position_listener)
-        self.second_bat_position_listener.append(self.ball.second_bat_position_listener)
+        self.ball = self.new_ball(-1)
         self.ai_offsets = 0
         self.bats = []
         if controls > 0:
@@ -96,7 +92,7 @@ class Game:
                 self.sounds.score_goal()
             elif self.bats[losing_player].timer == 0:
                 direction = -1 if losing_player == 0 else 1
-                self.ball = Ball(direction)
+                self.ball = self.new_ball(direction)
 
     def draw(self):
         self.screen.blit("table", (0, 0))
@@ -113,8 +109,16 @@ class Game:
                 colour = "0"
                 other_p = 1 - p
 
-        if self.bats[other_p].timer > 0 and self.ball.out():
-            colour = "2" if p == 0 else "1"
+                if self.bats[other_p].timer > 0 and self.ball.out():
+                    colour = "2" if p == 0 else "1"
 
-        image = "digit" + colour + str(score[i])
-        self.screen.blit(image, (255 + (160 * p) + (i * 55), 46))
+                image = "digit" + colour + str(score[i])
+                self.screen.blit(image, (255 + (160 * p) + (i * 55), 46))
+
+    def new_ball(self, direction) -> Ball:
+        ball = Ball(direction)
+        ball.ia_offset_listener(self.ia_offsets_randomize)
+        ball.on_hit_bat(self.ball_hit_bat)
+        self.first_bat_position_listener.insert(0, ball.fist_bat_position_listener)
+        self.second_bat_position_listener.insert(0, ball.second_bat_position_listener)
+        return ball

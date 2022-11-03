@@ -52,9 +52,10 @@ class Ball(Actor):
             original_x = self.x
             self.x += self.dx
             self.y += self.dy
-            new_dir_x = -1
-            bat = self.bats[1]
+
             if abs(self.x - HALF_WIDTH) >= 344 > abs(original_x - HALF_WIDTH):
+                new_dir_x = -1
+                bat = self.bats[1]
                 if self.x < HALF_WIDTH:
                     new_dir_x = 1
                     bat = self.bats[0]

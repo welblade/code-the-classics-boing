@@ -11,7 +11,7 @@ class Control:
     def move(self):
         move = 0
         if getattr(self.keyboard, self.down):
-            move = PLAYER_SPEED
-        elif getattr(self.keyboard, self.up):
             move = -PLAYER_SPEED
+        elif getattr(self.keyboard, self.up):
+            move = PLAYER_SPEED
         return move

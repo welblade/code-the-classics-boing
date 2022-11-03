@@ -10,15 +10,14 @@ PLAYER_SPEED = 6
 
 class Bat(Actor):
     def __init__(self, player, control):
-        # colocar em player posição na tela
         x = 40 if player == 0 else 760
-        # de onde essa variável deveria vir?
         y = HALF_HEIGHT
-
         super().__init__("blank", (x, y))
         self.is_ball_out = False;
+
         self.player = player
         self.score = 0
+
         self.timer = 0
         self.move_func = control.move
         self.image = "bat" + str(self.player) + "0"
