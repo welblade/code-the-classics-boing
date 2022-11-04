@@ -2,15 +2,9 @@ from collections.abc import Callable
 
 from pgzero.actor import Actor
 
+from boing.constants import *
 from boing.pos import Pos
 from boing.utils import normalised
-
-WIDTH = 800
-HEIGHT = 480
-HALF_WIDTH = WIDTH // 2
-HALF_HEIGHT = HEIGHT // 2
-PLAYER_SPEED = 6
-MAX_AI_SPEED = 6
 
 
 class Ball(Actor):

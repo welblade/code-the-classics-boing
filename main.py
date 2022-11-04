@@ -4,14 +4,7 @@ import pygame
 from boing.game import Game
 from boing.state import State
 from boing.sound import SoundPlayer
-
-WIDTH = 800
-HEIGHT = 480
-TITLE = "Boing!"
-HALF_WIDTH = WIDTH // 2
-HALF_HEIGHT = HEIGHT // 2
-PLAYER_SPEED = 6
-MAX_AI_SPEED = 6
+from boing.constants import *
 
 num_players = 1
 space_down = False

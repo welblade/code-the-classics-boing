@@ -1,22 +1,15 @@
 import random
 
 from pgzero.keyboard import Keyboard
+
 from boing.ai_control import AIControl
 from boing.ball import Ball
 from boing.bat import Bat
 from boing.control import Control
+from boing.constants import *
+from boing.impact import Impact
 from boing.pos import Pos
 from boing.sound import SoundPlayer
-from boing.impact import Impact
-
-
-WIDTH = 800
-HEIGHT = 480
-TITLE = "Boing!"
-HALF_WIDTH = WIDTH // 2
-HALF_HEIGHT = HEIGHT // 2
-PLAYER_SPEED = 6
-MAX_AI_SPEED = 6
 
 
 class Game:

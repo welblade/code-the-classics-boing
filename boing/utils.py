@@ -1,5 +1,6 @@
 import math
 
+
 def normalised(x, y):
     length = math.hypot(x, y)
     return x / length, y / length

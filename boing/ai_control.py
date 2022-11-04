@@ -1,13 +1,6 @@
-import typing
-
 from boing.control import Control
+from boing.constants import *
 from boing.pos import Pos
-
-WIDTH = 800
-HEIGHT = 480
-HALF_WIDTH = WIDTH // 2
-HALF_HEIGHT = HEIGHT // 2
-MAX_AI_SPEED = 6
 
 
 class AIControl(Control):

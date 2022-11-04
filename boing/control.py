@@ -1,5 +1,6 @@
 from pgzero.keyboard import Keyboard
-PLAYER_SPEED = 6
+
+from boing.constants import PLAYER_SPEED
 
 
 class Control:

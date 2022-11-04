@@ -1,11 +1,7 @@
 from pgzero.actor import Actor
-from boing.pos import Pos
 
-WIDTH = 800
-HEIGHT = 480
-HALF_WIDTH = WIDTH // 2
-HALF_HEIGHT = HEIGHT // 2
-PLAYER_SPEED = 6
+from boing.constants import *
+from boing.pos import Pos
 
 
 class Bat(Actor):
